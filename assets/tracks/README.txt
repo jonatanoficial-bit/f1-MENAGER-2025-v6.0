@@ -1,0 +1,26 @@
+Coloque aqui os FUNDOS de CADA PISTA.
+Exemplos:
+- bahrain.png
+- jeddah.png
+- australia.png
+- japan.png
+- china.png
+- miami.png
+- imola.png
+- monaco.png
+- canada.png
+- spain.png
+- austria.png
+- silverstone.png
+- hungary.png
+- spa.png
+- zandvoort.png
+- monza.png
+- baku.png
+- singapore.png
+- cota.png
+- mexico.png
+- interlagos.png
+- lasvegas.png
+- qatar.png
+- abudhabi.png
