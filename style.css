@@ -404,3 +404,34 @@ button:hover {
     font-weight: bold;
     color: #86ff86;
 }
+.fundo-capa {
+    background: url("assets/ui/capa_bg.png") center/cover no-repeat;
+}
+
+.fundo-lobby {
+    background: url("assets/ui/lobby_bg.png") center/cover no-repeat;
+}
+
+.fundo-pista {
+    background: url("assets/ui/pista_bg.png") center/cover no-repeat;
+}
+
+.fundo-oficina {
+    background: url("assets/ui/oficina_bg.png") center/cover no-repeat;
+}
+
+.fundo-funcionarios {
+    background: url("assets/ui/funcionarios_bg.png") center/cover no-repeat;
+}
+
+.fundo-mercado {
+    background: url("assets/ui/mercado_bg.png") center/cover no-repeat;
+}
+
+.fundo-patrocinio {
+    background: url("assets/ui/patrocinio_bg.png") center/cover no-repeat;
+}
+
+.fundo-podio {
+    background: url("assets/ui/podio_bg.png") center/cover no-repeat;
+}
