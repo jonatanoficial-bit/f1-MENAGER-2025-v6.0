@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>F1 Manager 2025</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="hud.css">
+<link rel="stylesheet" href="race.css">
+<link rel="stylesheet" href="podium.css">
+<link rel="stylesheet" href="setup.css">
+
+</head>
+<body>
+
+<!-- ======================================================
+     CAPA
+======================================================= -->
+<div id="tela-capa" class="tela">
+    <div class="capa-logo">F1 MANAGER 2025</div>
+    <button onclick="irMenu()" class="btn-principal">Entrar</button>
+</div>
+
+<!-- ======================================================
+     MENU PRINCIPAL
+======================================================= -->
+<div id="tela-menu" class="tela hidden">
+    <h1>Menu Principal</h1>
+    <button onclick="novaCarreira()" class="btn-menu">Nova Carreira</button>
+    <button onclick="continuarCarreira()" id="btn-continuar" class="btn-menu" style="display:none">Continuar Carreira</button>
+
+    <button onclick="abrirClassificacao()" class="btn-menu">Classificação</button>
+    <button onclick="mostrarCreditos()" class="btn-menu">Créditos</button>
+</div>
+
+<!-- ======================================================
+     SELEÇÃO GERENTE
+======================================================= -->
+<div id="tela-gerente" class="tela hidden">
+    <h2>Escolha o Gerente</h2>
+    <div id="lista-gerentes" class="grid"></div>
+</div>
+
+<!-- ======================================================
+     SELEÇÃO EQUIPE
+======================================================= -->
+<div id="tela-equipe" class="tela hidden">
+    <h2>Escolha a Equipe</h2>
+    <div id="lista-equipes" class="grid"></div>
+</div>
+
+<!-- ======================================================
+     TEMPORADA
+======================================================= -->
+<div id="tela-temporada" class="tela hidden">
+    <h2>Temporada</h2>
+    <div id="grid-calendario" class="calendario-grid"></div>
+
+    <div class="painel-proximo">
+        <h3 id="titulo-proximo-gp"></h3>
+        <div id="painel-pista-info"></div>
+        <button onclick="entrarGP()" class="btn-principal">Entrar no GP</button>
+    </div>
+
+    <button onclick="mostrarFuncionarios()" class="btn-menu">Funcionários</button>
+    <button onclick="abrirContratos()" class="btn-menu">Contratos</button>
+</div>
+
+<!-- 
+<!-- ======================================================
+     FUNCIONÁRIOS
+======================================================= -->
+<div id="tela-funcionarios" class="tela hidden">
+
+    <h2 class="titulo-func">Gestão de Funcionários</h2>
+
+    <!-- ABAS -->
+    <div class="func-tabs">
+        <button class="tab active" onclick="selecionarFuncTab('pilotos')">Pilotos</button>
+        <button class="tab" onclick="selecionarFuncTab('mecanicos')">Mecânicos</button>
+        <button class="tab" onclick="selecionarFuncTab('engenheiros')">Engenheiros</button>
+        <button class="tab" onclick="selecionarFuncTab('marketing')">Marketing</button>
+    </div>
+
+    <!-- GRADE DE FUNCIONÁRIOS -->
+    <div id="func-content" class="func-grid"></div>
+
+    <!-- RODAPÉ -->
+    <div class="func-footer">
+        <span>💰 Dinheiro Atual:</span>
+        <span id="dinheiro-func" class="dinheiro-valor">$ 0</span>
+    </div>
+
+    <button class="btn-voltar" onclick="voltarTemporada()">← Voltar</button>
+
+</div>
+======================================================
+     GP
+======================================================= -->
+<div id="tela-gp" class="tela hidden">
+    <h2 id="nome-gp-atual"></h2>
+
+    <button onclick="abrirPainelEstrategia()" class="btn-principal">Estratégia</button>
+    <button onclick="inicioTreino()" class="btn-menu">Treino Livre</button>
+    <button onclick="inicioClassificacao()" class="btn-menu">Classificação</button>
+    <button onclick="inicioCorrida()" class="btn-menu">Corrida</button>
+
+    <button onclick="voltarTemporada()" class="btn-voltar">← Voltar</button>
+</div>
+
+<!-- ======================================================
+     PAINEL SETUP / ESTRATÉGIA
+======================================================= -->
+<div id="tela-setup" class="tela hidden">
+    <div id="setup-content"></div>
+</div>
+
+<!-- ======================================================
+     TELA DE CORRIDA / QUALI
+======================================================= -->
+<div id="tela-corrida" class="tela hidden">
+
+    <canvas id="raceCanvas"></canvas>
+
+    <!-- HUD -->
+    <div id="hud-corrida">
+
+        <div id="hud-posicoes" class="hud-box"></div>
+
+        <div id="hud-info-piloto" class="hud-box"></div>
+
+        <div class="hud-box">
+            <div>RPM</div>
+            <div class="hud-rpm-container">
+                <div class="hud-rpm-bar"></div>
+            </div>
+            <div>G <span class="hud-gear">5</span></div>
+        </div>
+
+        <div id="hud-velocidade" class="hud-box">
+            <button onclick="setSpeed(1)">1x</button>
+            <button onclick="setSpeed(2)">2x</button>
+            <button onclick="setSpeed(4)">4x</button>
+        </div>
+    </div>
+
+    <button id="btn-voltar-menu" onclick="finalizarSessao()">Finalizar Sessão</button>
+</div>
+
+<!-- ======================================================
+     ELIMINADOS Q1 / Q2
+======================================================= -->
+<div id="tela-eliminados" class="tela hidden">
+    <h2 id="titulo-eliminados"></h2>
+    <div id="grid-eliminados" class="podio-grid"></div>
+    <button onclick="continuarClassificacao()" class="btn-principal">Continuar</button>
+</div>
+
+<!-- ======================================================
+     PÓDIO
+======================================================= -->
+<div id="podium-screen" class="tela hidden">
+    <h1>Pódio</h1>
+    <div id="podio-container" class="podio-grid"></div>
+    <button onclick="finalizarPodio()" class="btn-principal">Continuar</button>
+</div>
+
+<!-- ======================================================
+     CONTRATOS (FINAL DE TEMPORADA)
+======================================================= -->
+<div id="tela-contratos" class="tela hidden">
+    <h2>Mercado de Contratos</h2>
+    <div id="lista-contratos"></div>
+    <button onclick="finalizarMercado()" class="btn-principal">Nova Temporada</button>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+<script src="raceSystem.js"></script>
+<script src="pitStopSystem.js"></script>
+<script src="strategyPanel.js"></script>
+
+</body>
+</html>

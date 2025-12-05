@@ -1,0 +1,168 @@
+/* ================================================================
+   SETUP DO CARRO — PAINEL PROFISSIONAL ESTILO F1
+================================================================ */
+
+#tela-setup {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    color: #fff;
+}
+
+#tela-setup h2 {
+    font-size: 36px;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.7);
+}
+
+
+/* ------------------------------------------------------------
+   CONTAINER PRINCIPAL DO SETUP
+------------------------------------------------------------ */
+
+#setup-container {
+    background: rgba(10, 10, 10, 0.88);
+    width: 70%;
+    max-width: 900px;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+}
+
+
+/* ------------------------------------------------------------
+   BLOCO DE CADA PARÂMETRO
+------------------------------------------------------------ */
+
+.setup-bloco {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setup-bloco label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #e2e2e2;
+}
+
+
+/* ------------------------------------------------------------
+   SLIDERS — VERMELHO COM BORDA BRANCA
+------------------------------------------------------------ */
+
+.setup-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 12px;
+    background: #2b2b2b;
+    border-radius: 6px;
+    outline: none;
+    transition: 0.2s;
+    border: 1px solid #444;
+}
+
+.setup-slider:hover {
+    background: #363636;
+}
+
+/* WebKit */
+.setup-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e10600;
+    border: 2px solid #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255,0,0,0.6);
+    transition: 0.2s;
+}
+
+.setup-slider::-webkit-slider-thumb:hover {
+    background: #ff2525;
+    box-shadow: 0 0 12px rgba(255,0,0,0.8);
+}
+
+/* Firefox */
+.setup-slider::-moz-range-track {
+    height: 12px;
+    background: #2b2b2b;
+    border-radius: 6px;
+    border: 1px solid #444;
+}
+
+.setup-slider::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e10600;
+    border: 2px solid #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255,0,0,0.6);
+    transition: 0.2s;
+}
+
+.setup-slider::-moz-range-thumb:hover {
+    background: #ff2525;
+    box-shadow: 0 0 12px rgba(255,0,0,0.8);
+}
+
+
+/* ------------------------------------------------------------
+   VALORES NUMÉRICOS AO LADO DO SLIDER
+------------------------------------------------------------ */
+
+.setup-valor {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 2px;
+    text-align: right;
+    color: #ff3c3c;
+}
+
+
+/* ------------------------------------------------------------
+   BOTÕES DA TELA DE SETUP
+------------------------------------------------------------ */
+
+#tela-setup button {
+    width: 240px;
+    margin-top: 18px;
+    padding: 14px;
+    font-size: 18px;
+    border-radius: 8px;
+    background: #e10600;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,0,0,0.5);
+    transition: 0.25s;
+}
+
+#tela-setup button:hover {
+    background: #ff2323;
+    box-shadow: 0 0 16px rgba(255,0,0,0.8);
+}
+
+
+/* ------------------------------------------------------------
+   RESPONSIVO
+------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+    #setup-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    #tela-setup h2 {
+        font-size: 30px;
+    }
+}

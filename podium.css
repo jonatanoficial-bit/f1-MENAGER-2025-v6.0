@@ -1,0 +1,177 @@
+/* ================================================================
+   PÓDIO AAA — VISUAL PROFISSIONAL
+================================================================ */
+
+#podium-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    overflow-y: auto;
+    color: #fff;
+}
+
+.podium-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("assets/ui/podium_bg.png") center/cover no-repeat;
+    opacity: 0.25;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    filter: blur(2px);
+}
+
+#podium-screen h2 {
+    z-index: 5;
+    font-size: 42px;
+    margin-top: 10px;
+    text-shadow: 0 0 10px #000;
+}
+
+/* GRID DO PÓDIO (1º 2º 3º) */
+
+.podio-grid {
+    display: flex;
+    justify-content: center;
+    gap: 45px;
+    margin-top: 40px;
+    z-index: 5;
+}
+
+/* CARD PRINCIPAL DO PILOTO */
+
+.podio-card {
+    background: rgba(15, 15, 15, 0.85);
+    border: 2px solid rgba(255,255,255,0.12);
+    width: 260px;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 0 18px rgba(0,0,0,0.6);
+    position: relative;
+}
+
+/* Destaque para o vencedor */
+.podio-card.primeiro {
+    border-color: #ffcf00;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+}
+
+/* Avatar (foto grande) */
+.podio-imagem {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #333;
+}
+
+/* Nome do piloto */
+.podio-nome {
+    font-size: 26px;
+    margin-top: 14px;
+    font-weight: bold;
+}
+
+/* Nome da equipe */
+.podio-equipe {
+    font-size: 18px;
+    opacity: 0.85;
+    margin-top: 4px;
+}
+
+/* Bandeira */
+.podio-bandeira {
+    width: 45px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 10px;
+    border: 1px solid #555;
+}
+
+/* Logo da equipe */
+.podio-logo {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    margin-top: 8px;
+    filter: drop-shadow(0 0 4px #000);
+}
+
+/* ================================================================
+   TELA DE ELIMINADOS Q1 / Q2 — ESTILO CINEMÁTICO
+================================================================ */
+
+#tela-eliminados {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top, #111 0%, #000 70%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    overflow-y: auto;
+    color: #fff;
+}
+
+#tela-eliminados::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url("assets/ui/carbon_bg.png");
+    background-size: 380px;
+    opacity: 0.18;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#tela-eliminados h2 {
+    z-index: 5;
+    font-size: 38px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 12px rgba(0,0,0,0.9);
+}
+
+/* Reaproveita .podio-grid e .podio-card para eliminados */
+#grid-eliminados {
+    z-index: 5;
+}
+
+/* Estilo diferente pros eliminados (borda vermelha) */
+.podio-card.eliminado {
+    border-color: #e10600;
+    box-shadow: 0 0 18px rgba(225, 6, 0, 0.6);
+}
+
+/* Botão de continuar na tela de eliminados */
+#tela-eliminados button {
+    z-index: 5;
+    margin-top: 30px;
+}
+
+/* ================================================================
+   RESPONSIVIDADE
+================================================================ */
+
+@media (max-width: 900px) {
+    .podio-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .podio-card {
+        width: 80%;
+    }
+}
