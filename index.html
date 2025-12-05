@@ -57,7 +57,7 @@
     <h2>Temporada</h2>
     <div id="grid-calendario" class="calendario-grid"></div>
 
-    <div class="painel-proximo">
+    <div id="painel-proximo-gp">
         <h3 id="titulo-proximo-gp"></h3>
         <div id="painel-pista-info"></div>
         <button onclick="entrarGP()" class="btn-principal">Entrar no GP</button>
@@ -67,7 +67,6 @@
     <button onclick="abrirContratos()" class="btn-menu">Contratos</button>
 </div>
 
-<!-- 
 <!-- ======================================================
      FUNCIONÁRIOS
 ======================================================= -->
@@ -95,7 +94,8 @@
     <button class="btn-voltar" onclick="voltarTemporada()">← Voltar</button>
 
 </div>
-======================================================
+
+<!-- ======================================================
      GP
 ======================================================= -->
 <div id="tela-gp" class="tela hidden">
@@ -167,15 +167,30 @@
 </div>
 
 <!-- ======================================================
-     CONTRATOS (FINAL DE TEMPORADA)
+     CONTRATOS (FINAL DE TEMPORADA / MENU)
 ======================================================= -->
 <div id="tela-contratos" class="tela hidden">
-    <h2>Mercado de Contratos</h2>
-    <div id="lista-contratos"></div>
-    <button onclick="finalizarMercado()" class="btn-principal">Nova Temporada</button>
+
+    <h2 class="titulo-contratos">Mercado de Contratos</h2>
+
+    <div class="contratos-info">
+        <p>Equipe atual: <span id="contrato-equipe-atual">-</span></p>
+        <p>Score do Manager: <span id="contrato-score-manager">0</span></p>
+    </div>
+
+    <h3>Ofertas disponíveis</h3>
+    <div id="lista-contratos" class="contratos-grid"></div>
+
+    <div class="contratos-footer">
+        <span>💰 Dinheiro Atual:</span>
+        <span id="contrato-dinheiro" class="dinheiro-valor">$ 0</span>
+    </div>
+
+    <button id="btn-contratos-voltar" class="btn-voltar" onclick="fecharTelaContratos()">← Voltar</button>
 </div>
 
 <script src="data.js"></script>
+<script src="funcionariosData.js"></script>
 <script src="script.js"></script>
 <script src="raceSystem.js"></script>
 <script src="pitStopSystem.js"></script>
