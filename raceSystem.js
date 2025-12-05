@@ -1,208 +1,216 @@
-/* ============================================================
-   SISTEMA DE CORRIDA — VISUAL REAL F1 MANAGER 2025
-   - Renderização 60 FPS
-   - Mapa SVG
-   - Carros dinâmicos
-   - Voltas simuladas
-   - Pit stop
-   - HUD com posição/delta/pneu/temperatura
-   ============================================================ */
+/* ============================================================================
+   F1 MANAGER 2025 — raceSystem.js
+   Motor de Corrida simplificado (protótipo)
+   - Usa o <canvas id="raceCanvas">
+   - Simula carros girando em um traçado elíptico
+   - Atualiza HUD via elementos do DOM
+============================================================================ */
 
-/* ===========================
-   CONFIGURAÇÃO PADRÃO
-=========================== */
-
-let race = {
-    totalLaps: 20,
-    currentLap: 1,
-    speed: 1,
+let raceState = {
     running: false,
     cars: [],
-    fpsInterval: 1000 / 60,
-    lastFrameTime: 0,
-    trackName: "",
+    gpIndex: 0,
+    lap: 1,
+    totalLaps: 20,
+    lastTimestamp: 0,
+    speedMultiplier: 1
 };
 
-/* ===========================
-   INICIAR CORRIDA
-=========================== */
+let raceCanvas = null;
+let raceCtx = null;
 
+/* Inicializa tudo para um GP */
 function iniciarCorridaEngine(gpIndex) {
+    raceCanvas = document.getElementById("raceCanvas");
+    if (!raceCanvas) {
+        console.error("raceCanvas não encontrado no DOM.");
+        return;
+    }
+    raceCtx = raceCanvas.getContext("2d");
 
-    const gp = CALENDARIO[gpIndex];
-    race.trackName = gp.pista;
+    // Ajusta tamanho básico (responsivo simples)
+    raceCanvas.width  = raceCanvas.clientWidth  || 960;
+    raceCanvas.height = raceCanvas.clientHeight || 540;
 
-    // CARREGA O SVG
-    document.getElementById("trackMap").src = "assets/tracks/" + race.trackName;
+    raceState.gpIndex = gpIndex;
+    raceState.lap = 1;
+    raceState.totalLaps = 20;
+    raceState.running = true;
+    raceState.lastTimestamp = 0;
+    raceState.speedMultiplier = 1;
 
-    // CRIA OS CARROS
-    race.cars = criarGridInicial();
-
-    // INICIA LOOP
-    race.running = true;
-    race.currentLap = 1;
-    atualizarHUD();
+    criarCarrosParaCorrida();
+    atualizarHUDCorrida();
 
     window.requestAnimationFrame(loopCorrida);
 }
 
-/* ===========================
-   GRID INICIAL (ordem real)
-=========================== */
-function criarGridInicial() {
+/* Cria 20 carros com posição angular em uma elipse */
+function criarCarrosParaCorrida() {
+    raceState.cars = [];
 
-    let grid = [];
+    const numCars = 20;
+    const centroX = raceCanvas.width / 2;
+    const centroY = raceCanvas.height / 2;
+    const raioX = raceCanvas.width * 0.35;
+    const raioY = raceCanvas.height * 0.25;
 
-    let pilotosFiltrados = PILOTOS.sort((a, b) => b.rating - a.rating);
+    for (let i = 0; i < numCars; i++) {
+        let piloto = null;
+        if (window.PILOTOS && Array.isArray(PILOTOS) && PILOTOS[i]) {
+            piloto = PILOTOS[i];
+        }
 
-    pilotosFiltrados.forEach((p, index) => {
-        grid.push({
-            nome: p.nome,
-            id: p.id,
-            x: 50,
-            y: 50 + index * 12,
-            speed: 0.7 + Math.random() * 0.4,
-            laps: 0,
-            delta: 0,
-            tire: 100,
-            temp: 75 + Math.random() * 10,
-            pos: index + 1
+        raceState.cars.push({
+            nome: piloto ? piloto.nome : `Carro ${i+1}`,
+            angulo: (Math.PI * 2 * i) / numCars,
+            vel: 0.0035 + Math.random() * 0.0015,
+            x: centroX + Math.cos((Math.PI * 2 * i) / numCars) * raioX,
+            y: centroY + Math.sin((Math.PI * 2 * i) / numCars) * raioY,
+            cor: piloto ? (EQUIPES.find(e => e.id === piloto.equipe)?.cor || "#ffffff") : "#ffffff",
+            volta: 0,
+            ordem: i + 1
         });
-    });
-
-    return grid;
+    }
 }
 
-/* ===========================
-   LOOP DA CORRIDA 60 FPS
-=========================== */
+/* Loop principal da corrida */
 function loopCorrida(timestamp) {
+    if (!raceState.running) return;
 
-    if (!race.running) return;
-
-    if (timestamp - race.lastFrameTime < race.fpsInterval) {
-        requestAnimationFrame(loopCorrida);
-        return;
+    if (!raceState.lastTimestamp) {
+        raceState.lastTimestamp = timestamp;
     }
 
-    race.lastFrameTime = timestamp;
+    const delta = (timestamp - raceState.lastTimestamp) * raceState.speedMultiplier;
+    raceState.lastTimestamp = timestamp;
 
-    atualizarCarros();
-    desenharCarros();
-    atualizarHUD();
+    atualizarFisica(delta);
+    desenharCena();
+    atualizarHUDCorrida();
 
-    requestAnimationFrame(loopCorrida);
+    window.requestAnimationFrame(loopCorrida);
 }
 
-/* ===========================
-   MOVIMENTO DOS CARROS
-=========================== */
-function atualizarCarros() {
+/* Atualiza a posição dos carros em uma elipse e conta voltas */
+function atualizarFisica(delta) {
+    const centroX = raceCanvas.width / 2;
+    const centroY = raceCanvas.height / 2;
+    const raioX = raceCanvas.width * 0.35;
+    const raioY = raceCanvas.height * 0.25;
 
-    race.cars.forEach(car => {
+    raceState.cars.forEach(car => {
+        car.angulo += car.vel * delta;
 
-        // velocidade básica
-        let base = car.speed * race.speed;
+        // Quando passa de 2π, conta volta
+        if (car.angulo >= Math.PI * 2) {
+            car.angulo -= Math.PI * 2;
+            car.volta++;
 
-        // desgaste pneu
-        car.tire -= 0.03 * race.speed;
-        if (car.tire < 5) car.tire = 5;
-
-        // temperatura
-        car.temp += 0.01 * race.speed;
-        if (car.temp > 95) car.temp = 95;
-
-        // delta
-        car.delta = ((Math.random() - 0.5) * 0.05 * race.speed);
-
-        // mover
-        car.x += base;
-        car.y += Math.sin(car.x / 40) * 0.6;
-
-        // final da volta
-        if (car.x > 900) {
-            car.x = 0;
-            if (car === race.cars[0]) {
-                race.currentLap++;
-                if (race.currentLap > race.totalLaps) {
-                    terminarCorrida();
+            // Quando o "carro 0" completa, avança volta global
+            if (car === raceState.cars[0]) {
+                raceState.lap++;
+                if (raceState.lap > raceState.totalLaps) {
+                    encerrarCorrida();
                 }
             }
         }
+
+        car.x = centroX + Math.cos(car.angulo) * raioX;
+        car.y = centroY + Math.sin(car.angulo) * raioY;
     });
 
-    // recalcular posições
-    race.cars.sort((a, b) => b.x - a.x);
-    race.cars.forEach((c, i) => c.pos = i + 1);
-}
+    // Ordena pela volta e ângulo (quem está mais à frente no traçado)
+    raceState.cars.sort((a, b) => {
+        if (b.volta !== a.volta) return b.volta - a.volta;
+        return b.angulo - a.angulo;
+    });
 
-/* ===========================
-   DESENHAR CARROS NO MAPA
-=========================== */
-function desenharCarros() {
-
-    const layer = document.getElementById("carsLayer");
-    layer.innerHTML = "";
-
-    race.cars.forEach(car => {
-
-        let div = document.createElement("div");
-        div.className = "carIcon";
-        div.style.left = car.x + "px";
-        div.style.top = car.y + "px";
-
-        div.innerHTML = `<img src="assets/cars/${car.equipe || "redbull"}.png">`;
-
-        layer.appendChild(div);
+    raceState.cars.forEach((car, idx) => {
+        car.ordem = idx + 1;
     });
 }
 
-/* ===========================
-   ATUALIZAR HUD
-=========================== */
-function atualizarHUD() {
+/* Desenha a pista (elipse) e os carros como círculos coloridos */
+function desenharCena() {
+    if (!raceCtx) return;
 
-    document.getElementById("lapInfo").innerText =
-        race.currentLap + " / " + race.totalLaps;
+    const w = raceCanvas.width;
+    const h = raceCanvas.height;
+    raceCtx.clearRect(0, 0, w, h);
 
-    document.getElementById("posInfo").innerText =
-        "P" + race.cars[0].pos;
+    const centroX = w / 2;
+    const centroY = h / 2;
+    const raioX = w * 0.35;
+    const raioY = h * 0.25;
 
-    document.getElementById("deltaInfo").innerText =
-        race.cars[0].delta.toFixed(3);
+    // fundo
+    raceCtx.fillStyle = "#111";
+    raceCtx.fillRect(0, 0, w, h);
 
-    document.getElementById("tireInfo").innerText =
-        race.cars[0].tire.toFixed(0) + "%";
+    // pista
+    raceCtx.save();
+    raceCtx.translate(centroX, centroY);
+    raceCtx.strokeStyle = "#fff";
+    raceCtx.lineWidth = 6;
+    raceCtx.beginPath();
+    raceCtx.ellipse(0, 0, raioX, raioY, 0, Math.PI * 2);
+    raceCtx.stroke();
+    raceCtx.restore();
 
-    document.getElementById("tempInfo").innerText =
-        race.cars[0].temp.toFixed(0) + "°C";
+    // carros
+    raceState.cars.forEach(car => {
+        raceCtx.beginPath();
+        raceCtx.fillStyle = car.cor;
+        raceCtx.arc(car.x, car.y, 8, 0, Math.PI * 2);
+        raceCtx.fill();
+    });
 }
 
-/* ===========================
-   CONTROLE DE VELOCIDADE
-=========================== */
-function setSpeed(val) {
-    race.speed = val;
+/* Atualiza HUD da corrida (volta / total, posição do líder etc.) */
+function atualizarHUDCorrida() {
+    const hudVoltas      = document.getElementById("hud-tempos");
+    const hudPosicoes    = document.getElementById("hud-posicoes");
+    const hudInfoPiloto  = document.getElementById("hud-info-piloto");
+    const hudPneus       = document.getElementById("hud-pneus");
+
+    if (!raceState.cars.length) return;
+
+    const lider = raceState.cars[0];
+
+    if (hudVoltas) {
+        hudVoltas.textContent = `Volta ${raceState.lap} / ${raceState.totalLaps}`;
+    }
+    if (hudPosicoes) {
+        hudPosicoes.textContent = `Líder: ${lider.nome} (P${lider.ordem})`;
+    }
+    if (hudInfoPiloto) {
+        hudInfoPiloto.textContent = `Carros em pista: ${raceState.cars.length}`;
+    }
+    if (hudPneus) {
+        hudPneus.textContent = `Modo corrida x${raceState.speedMultiplier}`;
+    }
 }
 
-/* ===========================
-   FINALIZAR CORRIDA
-=========================== */
-function terminarCorrida() {
-    race.running = false;
-
-    // resultado final
-    const podium = race.cars.slice(0, 3);
-
-    localStorage.setItem("ultimoPodio", JSON.stringify(podium));
-
-    // troca de tela
-    window.location.href = "podium.html";
+/* Muda multiplicador de velocidade (poderia ser ligado a botões no futuro) */
+function setRaceSpeed(mult) {
+    raceState.speedMultiplier = mult;
 }
 
-/* ===========================
-   BOTÃO ENCERRAR
-=========================== */
-function finishRace() {
-    terminarCorrida();
+/* Encerra corrida e grava pódio simples no localStorage */
+function encerrarCorrida() {
+    raceState.running = false;
+
+    const resultado = raceState.cars
+        .map(car => ({
+            nome: car.nome,
+            posicao: car.ordem
+        }))
+        .sort((a, b) => a.posicao - b.posicao);
+
+    try {
+        localStorage.setItem("F1_MANAGER_2025_ULTIMO_PODIO", JSON.stringify(resultado));
+    } catch (e) {
+        console.error("Erro ao salvar resultado da corrida:", e);
+    }
 }
