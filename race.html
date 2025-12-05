@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corrida - F1 Manager 2025</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="race.css">
+
+</head>
+<body>
+
+<div id="raceContainer">
+
+    <!-- MAPA DA PISTA -->
+    <div id="trackArea">
+        <img id="trackMap" src="" alt="mapa">
+        
+        <!-- CARRINHOS DINÂMICOS -->
+        <div id="carsLayer"></div>
+    </div>
+
+    <!-- HUD -->
+    <div id="raceHUD">
+        <div class="hudBox">
+            <span>Volta: <span id="lapInfo">1 / 20</span></span>
+        </div>
+        <div class="hudBox">
+            <span>Posição: <span id="posInfo">P1</span></span>
+        </div>
+        <div class="hudBox">
+            <span>Delta: <span id="deltaInfo">+0.000</span></span>
+        </div>
+        <div class="hudBox">
+            <span>Pneu: <span id="tireInfo">98%</span></span>
+        </div>
+        <div class="hudBox">
+            <span>Temp: <span id="tempInfo">81°C</span></span>
+        </div>
+    </div>
+
+    <!-- CONTROLES -->
+    <div id="raceControls">
+        <button onclick="setSpeed(1)">1x</button>
+        <button onclick="setSpeed(2)">2x</button>
+        <button onclick="setSpeed(4)">4x</button>
+        <button onclick="finishRace()">Finalizar</button>
+    </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="raceSystem.js"></script>
+
+</body>
+</html>
