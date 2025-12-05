@@ -1,28 +1,79 @@
 /* ================================================================
-   ESTILO GLOBAL — FUNDO CARBONO
+   ESTILO GLOBAL
 ================================================================ */
 
-body {
+* {
+    box-sizing: border-box;
+}
+
+html, body {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #000;
     color: #fff;
-    overflow: hidden;
 }
 
-body::before {
-    content: "";
-    position: fixed;
+/* Removemos overflow:hidden do body para evitar cortes estranhos.
+   O controle de scroll é feito nas telas (.tela). */
+
+
+/* ================================================================
+   TELAS / LAYOUT
+================================================================ */
+
+.tela {
+    position: relative;
+    width: 100vw;
+    height: 100vh;          /* Tela cheia */
+    overflow: hidden;       /* Nada vaza para fora */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 70px;      /* espaço para título/botões */
+    text-align: center;
+}
+
+.tela.hidden {
+    display: none;
+}
+
+/* Fundo cinematográfico em todas as telas */
+.bgTela {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    background-image: url("assets/ui/carbon_bg.png");
-    background-size: 380px;
-    opacity: 0.14;
-    pointer-events: none;
+    object-fit: cover;          /* cobre toda a tela */
+    z-index: -1;
+    filter: brightness(0.8);    /* leve escurecida pra destacar HUD e botões */
 }
+
+
+/* ================================================================
+   TÍTULOS
+================================================================ */
+
+h1, h2, h3 {
+    margin: 0 0 20px 0;
+    text-shadow: 0 0 8px #000;
+    z-index: 1;
+}
+
+h1 {
+    font-size: 2.4rem;
+}
+
+h2 {
+    font-size: 1.8rem;
+}
+
 
 /* ================================================================
    BOTÕES
@@ -32,406 +83,253 @@ button {
     background: #E10600;
     color: #fff;
     border: none;
-    padding: 14px 28px;
-    border-radius: 8px;
-    font-size: 18px;
+    border-radius: 12px;
+    padding: 10px 22px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: .15s;
-    box-shadow: 0 0 8px rgba(255,0,0,0.2);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+    z-index: 1;
 }
 
 button:hover {
-    background: #ff2b2b;
-    box-shadow: 0 0 12px rgba(255,0,0,0.4);
+    background: #ff2112;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.7);
 }
 
-.hidden { display: none; }
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.7);
+}
 
-.fullscreen {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
+/* Botão capa */
+.btnBig {
+    margin-top: 40px;
+    font-size: 1.2rem;
+    padding: 14px 32px;
+}
+
+/* Botões do menu principal / lobby */
+.btnMid {
+    display: block;
+    width: 200px;
+    margin: 10px auto;
+}
+
+/* Botões menores (lobby, oficinas, etc.) */
+.btnSmall {
+    margin: 8px 6px;
+    font-size: 0.9rem;
+    padding: 8px 16px;
 }
 
 
 /* ================================================================
-   CAPA
+   GRIDS (GERENTES, EQUIPES, GPS)
 ================================================================ */
-#tela-capa {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-#capa-img {
+.gridFaces,
+.gridLogos,
+.gridTracks {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
+    max-width: 1100px;
+    margin-top: 20px;
+    padding: 0 20px 30px 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    z-index: 1;
 }
 
-
-/* ================================================================
-   MENU PRINCIPAL
-================================================================ */
-#tela-menu {
+/* Cartões genéricos */
+.card {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 16px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.7);
+    border-color: #E10600;
+}
+
+/* Imagens nos cards (gerentes, equipes, etc.) */
+.card img {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    background: #111;
+}
+
+.card span {
+    font-size: 0.9rem;
+}
+
+
+/* ================================================================
+   TEMPORADA / GPs
+================================================================ */
+
+.gridTracks .card {
+    height: 140px;
     justify-content: center;
 }
 
-.titulo-jogo {
-    font-size: 52px;
-    margin-bottom: 40px;
-    color: #E10600;
-    text-shadow: 0 0 12px rgba(255,0,0,0.6);
+.gridTracks .card img {
+    width: 70px;
+    height: 50px;
 }
 
-
-/* ================================================================
-   SELEÇÃO DE GERENTE
-================================================================ */
-#lista-gerentes {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    padding: 25px;
-}
-
-.card-gerente {
-    background: rgba(15, 15, 15, 0.8);
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
-    border: 1px solid #222;
-}
-
-.card-gerente:hover {
-    background: rgba(35, 35, 35, 0.9);
-}
-
-.card-gerente img {
-    width: 140px;
-    height: 140px;
-    border-radius: 8px;
-    object-fit: cover;
-}
-
-
-/* ================================================================
-   SELEÇÃO DE EQUIPE
-================================================================ */
-#lista-equipes {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 25px;
-    padding: 25px;
-}
-
-.card-equipe {
-    background: rgba(15, 15, 15, 0.8);
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
-    border: 1px solid #222;
-}
-
-.card-equipe:hover {
-    background: rgba(35, 35, 35, 0.9);
-}
-
-.logo-equipe {
-    width: 110px;
-    height: 110px;
-    object-fit: contain;
-}
-
-
-/* ================================================================
-   TEMPORADA (GRADE NETFLIX)
-================================================================ */
-#tela-temporada {
-    padding: 30px;
-}
-
-.subtitulo {
-    margin-top: 100px;
-    font-size: 28px;
-}
-
-#grid-calendario {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 25px;
-    margin-top: 20px;
-}
-
-/* CARTÕES DO GP */
-.card-gp {
-    background: rgba(15, 15, 15, 0.85);
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    transition: .25s;
-    cursor: pointer;
-    position: relative;
-    border: 2px solid #222;
-}
-
-.card-gp:hover {
-    transform: scale(1.05);
-    border-color: #E10600;
-    box-shadow: 0 0 14px rgba(255,0,0,0.4);
-}
-
-/* Nome do GP */
-.gp-nome {
-    font-size: 16px;
-    margin-top: 8px;
-    height: 25px;
-}
-
-/* Bandeira */
-.gp-flag {
-    font-size: 26px;
-    margin-bottom: 5px;
-}
-
-/* Mini traçado SVG */
-.gp-mini-track {
-    width: 110px;
-    height: 80px;
-    object-fit: contain;
-    margin-top: 6px;
-    filter: drop-shadow(0 0 4px #000);
-}
-
-/* Status */
-.gp-status {
-    position: absolute;
-    bottom: 6px;
-    right: 8px;
-    font-size: 20px;
-}
-
-/* Estados visuais */
-.card-gp.concluido { opacity: 0.35; }
-.card-gp.atual {
-    border-color: #E10600;
-    box-shadow: 0 0 18px #E10600;
-}
-.card-gp.futuro {
-    opacity: 0.2;
+/* Card de GP bloqueado */
+.card.gp-bloqueado {
+    opacity: 0.4;
     cursor: default;
 }
 
-.card-gp.futuro:hover {
+.card.gp-bloqueado:hover {
     transform: none;
-    border-color: #222;
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 
 /* ================================================================
-   PAINEL PRÓXIMO GP
+   CORRIDA (CANVAS + HUD)
 ================================================================ */
-#painel-proximo-gp {
-    background: rgba(15, 15, 15, 0.85);
-    border-radius: 12px;
-    padding: 25px;
-    width: 90%;
-    margin: auto;
-    margin-top: 40px;
-    text-align: center;
-    border: 2px solid #222;
-    box-shadow: 0 0 20px rgba(0,0,0,0.35);
-}
 
-#painel-pista-info { margin-top: 10px; }
-
-.painel-track {
-    width: 260px;
-    height: 180px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 6px #000);
-}
-
-
-/* ================================================================
-   BTNS GP
-================================================================ */
-#btns-gp {
-    margin-top: 35px;
-    display: flex;
-    gap: 25px;
-    justify-content: center;
-}
-
-
-/* ================================================================
-   RESPONSIVO
-================================================================ */
-@media (max-width: 1100px) {
-    #grid-calendario {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (max-width: 800px) {
-    #grid-calendario {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .painel-track {
-        width: 200px;
-        height: 150px;
-    }
-
-    .gp-mini-track {
-        width: 90px;
-        height: 70px;
-    }
-}
-/* ======================================================
-   FUNCIONÁRIOS — TELA COMPLETA
-====================================================== */
-
-#tela-funcionarios {
-    display: none;
-    padding: 20px;
-    color: #fff;
-}
-
-#tela-funcionarios .titulo-func {
-    font-size: 30px;
-    margin-bottom: 10px;
-}
-
-/* Abas */
-
-.func-tabs {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0 15px 0;
-}
-
-.func-tabs .tab {
-    padding: 8px 16px;
-    background: #222;
-    border: 1px solid #444;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.func-tabs .tab.active {
-    background: #E10600;
-    border-color: #700000;
-    color: white;
-}
-
-/* Grid de cards */
-
-.func-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.func-card {
-    background: rgba(0, 0, 0, 0.6);
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #333;
-    backdrop-filter: blur(3px);
-    text-align: center;
-}
-
-.func-card img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 6px;
-}
-
-.func-card h4 {
-    margin: 4px 0;
-    font-size: 16px;
-}
-
-.func-card .score {
-    font-weight: bold;
-    margin-bottom: 4px;
-    color: #ffd700;
-}
-
-.func-card .salario {
-    color: #86ff86;
-    font-size: 14px;
-    margin-bottom: 6px;
-}
-
-.func-card button {
-    background: #E10600;
-    color: #fff;
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.func-card button:hover {
-    background: #ff2626;
-}
-
-/* Rodapé de dinheiro */
-
-.func-footer {
-    margin-top: 14px;
-    font-size: 16px;
-    display: flex;
-    gap: 8px;
+#telaCorrida {
     align-items: center;
+    justify-content: center;
+    padding-top: 20px;
 }
 
-.dinheiro-valor {
-    font-weight: bold;
-    color: #86ff86;
-}
-.fundo-capa {
-    background: url("assets/ui/capa_bg.png") center/cover no-repeat;
-}
-
-.fundo-lobby {
-    background: url("assets/ui/lobby_bg.png") center/cover no-repeat;
-}
-
-.fundo-pista {
-    background: url("assets/ui/pista_bg.png") center/cover no-repeat;
+#raceCanvas {
+    width: 90vw;
+    max-width: 1280px;
+    height: auto;
+    max-height: 70vh;
+    background: #000;
+    border-radius: 20px;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.fundo-oficina {
-    background: url("assets/ui/oficina_bg.png") center/cover no-repeat;
+/* HUD sobre a corrida */
+#hudCorrida {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 16px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    text-align: left;
+    z-index: 2;
 }
 
-.fundo-funcionarios {
-    background: url("assets/ui/funcionarios_bg.png") center/cover no-repeat;
+#hudCorrida p {
+    margin: 2px 0;
 }
 
-.fundo-mercado {
-    background: url("assets/ui/mercado_bg.png") center/cover no-repeat;
+/* Botão "Finalizar Corrida" fica abaixo do canvas */
+#telaCorrida .btnSmall {
+    margin-top: 18px;
 }
 
-.fundo-patrocinio {
-    background: url("assets/ui/patrocinio_bg.png") center/cover no-repeat;
+
+/* ================================================================
+   PÓDIO
+================================================================ */
+
+#telaPodio #podioConteudo {
+    margin-top: 40px;
+    width: 100%;
+    max-width: 800px;
+    padding: 0 20px;
+    z-index: 1;
 }
 
-.fundo-podio {
-    background: url("assets/ui/podio_bg.png") center/cover no-repeat;
+
+/* ================================================================
+   TELAS SECUNDÁRIAS (FUNCIONÁRIOS, OFICINA, CONTRATOS)
+================================================================ */
+
+#telaFuncionarios,
+#telaOficina,
+#telaContratos,
+#telaClassificacao {
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#listaFuncionarios,
+#painelSetup,
+#painelContratos,
+#painelClassificacao {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 20px 40px 20px;
+    z-index: 1;
+}
+
+/* Cards internos podem usar a classe .card já definida */
+
+
+/* ================================================================
+   RESPONSIVIDADE
+================================================================ */
+
+@media (max-width: 900px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    #raceCanvas {
+        width: 96vw;
+        max-height: 60vh;
+    }
+
+    #hudCorrida {
+        top: 20px;
+        left: 12px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .tela {
+        padding-top: 60px;
+    }
+
+    .btnMid {
+        width: 180px;
+    }
+
+    .gridFaces,
+    .gridLogos,
+    .gridTracks {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+    }
+
+    #hudCorrida {
+        top: 16px;
+        left: 8px;
+        padding: 8px 10px;
+    }
 }
