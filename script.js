@@ -4,35 +4,79 @@
 ================================================================ */
 
 /* ===============================================================
-   VARIÁVEIS GLOBAIS
+   ESTADO GLOBAL DO JOGO
 ================================================================ */
 let save = {
     gerente: null,
     equipe: null,
-    gpAtual: 0,            // índice do CALENDARIO
-    resultados: [],        // resultados de cada GP
-    pilotosPontos: {},     // pontuação total dos pilotos
-    equipesPontos: {},     // construtores
-    setup: {}              // setup salvo por GP
+    gpAtual: 0,            // índice atual no CALENDARIO
+    resultados: [],        // resultados de cada GP (podemos expandir depois)
+    pilotosPontos: {},     // pontuação dos pilotos
+    equipesPontos: {},     // pontuação das equipes
+    setup: {}              // setup por GP
 };
 
-const tela = (id) => document.getElementById(id);
-const gridCalendario = document.getElementById("grid-calendario");
-const painelProximoGP = document.getElementById("painel-pista-info");
-
-
-/* ===============================================================
-   INICIAR JOGO (CAPA → MENU)
-================================================================ */
-function irMenu() {
-    tela("tela-capa").classList.add("hidden");
-    tela("tela-menu").classList.remove("hidden");
-    carregarSave();
+/* Helper rápido para pegar elementos */
+function $(id) {
+    return document.getElementById(id);
 }
 
+/* Mostrar/ocultar telas */
+function mostrarTela(id) {
+    document.querySelectorAll(".tela").forEach(t => t.classList.add("hidden"));
+    const tela = $(id);
+    if (tela) tela.classList.remove("hidden");
+}
 
 /* ===============================================================
-   NOVA CARREIRA
+   SAVE EM LOCALSTORAGE
+================================================================ */
+function carregarSave() {
+    try {
+        const dados = localStorage.getItem("F1_MANAGER_2025_SAVE");
+        if (!dados) return;
+        const obj = JSON.parse(dados);
+        if (!obj || typeof obj !== "object") return;
+
+        save.gerente       = obj.gerente       ?? null;
+        save.equipe        = obj.equipe        ?? null;
+        save.gpAtual       = obj.gpAtual       ?? 0;
+        save.resultados    = obj.resultados    ?? [];
+        save.pilotosPontos = obj.pilotosPontos ?? {};
+        save.equipesPontos = obj.equipesPontos ?? {};
+        save.setup         = obj.setup         ?? {};
+    } catch (e) {
+        console.error("Erro ao carregar save:", e);
+    }
+}
+
+function salvarSave() {
+    try {
+        localStorage.setItem("F1_MANAGER_2025_SAVE", JSON.stringify(save));
+    } catch (e) {
+        console.error("Erro ao salvar save:", e);
+    }
+}
+
+/* Atualiza visibilidade do botão CONTINUAR */
+function atualizarBotaoContinuar() {
+    const btn = $("btn-continuar");
+    if (!btn) return;
+    btn.style.display = save.equipe ? "inline-block" : "none";
+}
+
+/* ===============================================================
+   FLUXO INICIAL
+================================================================ */
+function irMenu() {
+    // Chamado ao clicar na capa
+    carregarSave();
+    atualizarBotaoContinuar();
+    mostrarTela("tela-menu");
+}
+
+/* ===============================================================
+   MENU PRINCIPAL
 ================================================================ */
 function novaCarreira() {
     save = {
@@ -44,73 +88,31 @@ function novaCarreira() {
         equipesPontos: {},
         setup: {}
     };
-
     salvarSave();
-
-    tela("tela-menu").classList.add("hidden");
-    tela("tela-gerente").classList.remove("hidden");
+    mostrarTela("tela-gerente");
     renderGerentes();
 }
 
-
-/* ===============================================================
-   CARREGAR / SALVAR SAVE
-================================================================ */
-function carregarSave() {
-    const dados = localStorage.getItem("f1manager2025save");
-    if (dados) {
-        try {
-            const parsed = JSON.parse(dados);
-            if (parsed && typeof parsed === "object") {
-                save = {
-                    gerente: parsed.gerente ?? null,
-                    equipe: parsed.equipe ?? null,
-                    gpAtual: parsed.gpAtual ?? 0,
-                    resultados: parsed.resultados ?? [],
-                    pilotosPontos: parsed.pilotosPontos ?? {},
-                    equipesPontos: parsed.equipesPontos ?? {},
-                    setup: parsed.setup ?? {}
-                };
-            }
-        } catch (e) {
-            console.error("Erro ao carregar save:", e);
-        }
-    }
-
-    const btnContinuar = document.getElementById("btn-continuar");
-    if (btnContinuar) {
-        btnContinuar.style.display = save.gerente ? "inline-block" : "none";
-    }
-}
-
-function salvarSave() {
-    localStorage.setItem("f1manager2025save", JSON.stringify(save));
-}
-
-
-/* ===============================================================
-   CONTINUAR CARREIRA
-================================================================ */
 function continuarCarreira() {
-    if (!save.gerente) return;
-    tela("tela-menu").classList.add("hidden");
+    carregarSave();
+    if (!save.equipe) {
+        alert("Nenhuma carreira salva encontrada. Crie uma nova carreira.");
+        return;
+    }
     abrirTemporada();
 }
 
-
-/* ===============================================================
-   CRÉDITOS
-================================================================ */
 function mostrarCreditos() {
-    alert("F1 MANAGER 2025\n\nProtótipo criado por Jonatan + IA.\nVersão demo com sistema de temporada, corrida e pódio.");
+    alert("F1 Manager 2025\nProtótipo de simulação desenvolvido por Jonatan + IA.");
 }
 
-
 /* ===============================================================
-   RENDERIZAÇÃO DE GERENTES
-   (usa assets/managers/manager_ethnic_01..06.png)
+   GERENTES
 ================================================================ */
 function renderGerentes() {
+    const container = $("lista-gerentes");
+    if (!container) return;
+
     const gerentes = [
         { id: 1, nome: "Gerente 1", img: "assets/managers/manager_ethnic_01.png" },
         { id: 2, nome: "Gerente 2", img: "assets/managers/manager_ethnic_02.png" },
@@ -121,282 +123,232 @@ function renderGerentes() {
     ];
 
     let html = "";
-    gerentes.forEach((g) => {
+    gerentes.forEach(g => {
         html += `
             <div class="card-gerente" onclick="selecionarGerente(${g.id})">
                 <img src="${g.img}" alt="${g.nome}">
-                <p>${g.nome}</p>
+                <span>${g.nome}</span>
             </div>
         `;
     });
-
-    const box = document.getElementById("lista-gerentes");
-    if (box) box.innerHTML = html;
+    container.innerHTML = html;
 }
 
 function selecionarGerente(id) {
-    save.gerente = "gerente" + id;
+    save.gerente = "gerente_" + id;
     salvarSave();
-    tela("tela-gerente").classList.add("hidden");
-    tela("tela-equipe").classList.remove("hidden");
+    mostrarTela("tela-equipe");
     renderEquipes();
 }
 
-
 /* ===============================================================
-   RENDERIZAÇÃO DE EQUIPES
+   EQUIPES
 ================================================================ */
 function renderEquipes() {
-    if (!EQUIPES || !Array.isArray(EQUIPES)) return;
+    const container = $("lista-equipes");
+    if (!container) return;
+    if (!window.EQUIPES || !Array.isArray(EQUIPES)) {
+        console.error("EQUIPES não encontrado em data.js");
+        return;
+    }
 
     let html = "";
-    EQUIPES.forEach((eq) => {
+    EQUIPES.forEach(eq => {
         html += `
             <div class="card-equipe" onclick="selecionarEquipe('${eq.id}')">
-                <img src="${eq.logo}" class="logo-equipe" alt="${eq.nome}">
-                <p>${eq.nome}</p>
+                <img src="${eq.logo}" alt="${eq.nome}">
+                <span>${eq.nome}</span>
             </div>
         `;
     });
-
-    const box = document.getElementById("lista-equipes");
-    if (box) box.innerHTML = html;
+    container.innerHTML = html;
 }
 
-function selecionarEquipe(id) {
-    save.equipe = id;
+function selecionarEquipe(idEquipe) {
+    save.equipe = idEquipe;
     salvarSave();
-
-    tela("tela-equipe").classList.add("hidden");
     abrirTemporada();
 }
 
-
 /* ===============================================================
-   ABRIR TELA DE TEMPORADA (GRADE NETFLIX)
+   TELA DE TEMPORADA
 ================================================================ */
 function abrirTemporada() {
-    esconderTodasTelas();
-    tela("tela-temporada").classList.remove("hidden");
-
+    mostrarTela("tela-temporada");
+    atualizarBotaoContinuar();
     renderCalendario();
     atualizarPainelProximoGP();
 }
 
-function esconderTodasTelas() {
-    document.querySelectorAll(".tela").forEach((t) =>
-        t.classList.add("hidden")
-    );
-}
-
-
-/* ===============================================================
-   RENDERIZAR CALENDÁRIO COMPLETO DOS 24 GPs
-================================================================ */
+/* Renderiza todos os 24 GPs */
 function renderCalendario() {
-    if (!CALENDARIO || !Array.isArray(CALENDARIO)) return;
-    if (!gridCalendario) return;
+    const container = $("grid-calendario");
+    if (!container) return;
+    if (!window.CALENDARIO || !Array.isArray(CALENDARIO)) {
+        console.error("CALENDARIO não encontrado em data.js");
+        return;
+    }
 
     let html = "";
-
     CALENDARIO.forEach((gp, index) => {
-        let statusClasse = "";
-        let statusLabel = "";
+        let classe = "gp-futuro";
+        let status = "Futuro";
 
         if (index < save.gpAtual) {
-            statusClasse = "gp-concluido";
-            statusLabel = "Concluído";
+            classe = "gp-concluido";
+            status = "Concluído";
         } else if (index === save.gpAtual) {
-            statusClasse = "gp-atual";
-            statusLabel = "GP Atual";
-        } else {
-            statusClasse = "gp-bloqueado";
-            statusLabel = "Bloqueado";
+            classe = "gp-atual";
+            status = "GP Atual";
         }
 
         html += `
-            <div class="card-gp ${statusClasse}" onclick="clicarGP(${index})">
-                <div class="gp-titulo">${gp.nome}</div>
-                <div class="gp-status">${statusLabel}</div>
+            <div class="card-gp ${classe}" onclick="selecionarGP(${index})">
+                <div class="gp-nome">${gp.nome}</div>
+                <div class="gp-status">${status}</div>
             </div>
         `;
     });
 
-    gridCalendario.innerHTML = html;
+    container.innerHTML = html;
 }
 
-
-/* ===============================================================
-   CLIQUE EM UM GP NO CALENDÁRIO
-================================================================ */
-function clicarGP(index) {
-    // Só permite selecionar o GP atual ou anteriores
-    if (index > save.gpAtual) return;
-
-    save.gpAtual = index;
+/* Ao clicar em um GP no calendário */
+function selecionarGP(indice) {
+    if (indice > save.gpAtual) {
+        // Bloqueia GPs futuros: só pode clicar até o GP atual
+        return;
+    }
+    save.gpAtual = indice;
     salvarSave();
     atualizarPainelProximoGP();
 }
 
-
-/* ===============================================================
-   ATUALIZAR PAINEL “PRÓXIMO GP”
-================================================================ */
+/* Atualiza painel do próximo GP (nome + imagem da pista) */
 function atualizarPainelProximoGP() {
-    if (!CALENDARIO || CALENDARIO.length === 0) return;
-
-    // Garante índice válido
-    if (save.gpAtual < 0) save.gpAtual = 0;
-    if (save.gpAtual >= CALENDARIO.length) save.gpAtual = CALENDARIO.length - 1;
-
+    if (!window.CALENDARIO || !CALENDARIO[save.gpAtual]) return;
     const gp = CALENDARIO[save.gpAtual];
 
-    const titulo = document.getElementById("titulo-proximo-gp");
+    const titulo = $("titulo-proximo-gp");
     if (titulo) {
-        titulo.innerText = "Próximo GP: " + gp.nome;
+        titulo.textContent = "Próximo GP: " + gp.nome;
     }
 
-    if (painelProximoGP) {
-        painelProximoGP.innerHTML = `
-            <div class="painel-track-wrapper">
-                <img src="assets/tracks/${gp.pista}" class="painel-track" alt="${gp.nome}">
-            </div>
-            <p class="painel-track-nome">${gp.nome}</p>
+    const painel = $("painel-pista-info");
+    if (painel) {
+        painel.innerHTML = `
+            <img src="assets/tracks/${gp.pista}" class="img-pista" alt="${gp.nome}">
         `;
     }
+
+    renderCalendario();
 }
 
-
-/* ===============================================================
-   BOTÃO: ENTRAR NO GP
-================================================================ */
+/* Entra na tela GP (Treino / Classificação / Corrida) */
 function entrarGP() {
-    esconderTodasTelas();
-    tela("tela-gp").classList.remove("hidden");
-
+    if (!window.CALENDARIO || !CALENDARIO[save.gpAtual]) return;
     const gp = CALENDARIO[save.gpAtual];
-    const titulo = document.getElementById("nome-gp-atual");
-    if (titulo && gp) {
-        titulo.innerText = gp.nome;
+
+    mostrarTela("tela-gp");
+
+    const titulo = $("nome-gp-atual");
+    if (titulo) {
+        titulo.textContent = gp.nome;
     }
 }
 
-
 /* ===============================================================
-   TREINO, CLASSIFICAÇÃO E CORRIDA
-   (Treino/Classificação placeholders – corrida usa raceSystem.js)
+   TREINO / CLASSIFICAÇÃO / CORRIDA
 ================================================================ */
 function inicioTreino() {
-    alert("Treino Livre será implementado em detalhe (telemetria e feedback de pilotos).");
+    alert("Treino Livre: em versões futuras, aqui entram telemetria e feedback dos pilotos.");
 }
 
 function inicioClassificacao() {
-    alert("Classificação Q1 / Q2 / Q3 será implementada em detalhe.");
+    alert("Classificação Q1 / Q2 / Q3 será detalhada em versão posterior.\nPor enquanto, vá direto para a Corrida.");
 }
 
 function inicioCorrida() {
-    esconderTodasTelas();
-    tela("tela-corrida").classList.remove("hidden");
+    mostrarTela("tela-corrida");
 
-    // Função definida em raceSystem.js
+    // Chama o motor de corrida no raceSystem.js
     if (typeof iniciarCorridaEngine === "function") {
         iniciarCorridaEngine(save.gpAtual);
     } else {
-        console.error("iniciarCorridaEngine não encontrado (raceSystem.js).");
+        console.warn("iniciarCorridaEngine não encontrado. Mostrando placeholder.");
+        const canvas = $("raceCanvas");
+        if (canvas) {
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#fff";
+            ctx.font = "20px Arial";
+            ctx.fillText("Motor de corrida não carregado.", 40, 60);
+        }
     }
 }
 
-
-/* ===============================================================
-   SETUP DO CARRO (placeholder — setup real pode vir de outro JS)
-================================================================ */
-function salvarSetup() {
-    // Aqui você poderia ler sliders/inputs de setup e salvar em save.setup[gp]
-    // Exemplo (genérico):
-    // const asaDianteira = Number(document.getElementById("setup-asa-d").value);
-    // const asaTraseira = Number(document.getElementById("setup-asa-t").value);
-    // save.setup[save.gpAtual] = { asaDianteira, asaTraseira, ... };
-
-    salvarSave();
-    alert("Setup salvo para o GP atual (placeholder).");
-}
-
-
-/* ===============================================================
-   FINALIZAÇÃO DA CORRIDA → PÓDIO
-   (chamado pelo botão “Finalizar Corrida”)
-================================================================ */
+/* Chamado pelo botão 'Finalizar Corrida' na tela de corrida */
 function finalizarCorrida() {
-    tela("tela-corrida").classList.add("hidden");
-    tela("podium-screen").classList.remove("hidden");
-
-    // Função que deve montar o pódio (definida em raceSystem.js)
-    if (typeof gerarPodio === "function") {
-        gerarPodio();
-    } else {
-        console.error("gerarPodio não encontrado (raceSystem.js).");
-    }
-}
-
-
-/* ===============================================================
-   FINALIZAR PÓDIO → AVANÇAR TEMPORADA
-================================================================ */
-function finalizarPodio() {
-    // Avança para o próximo GP
-    save.gpAtual++;
-
-    // Fim da temporada → abre mercado de contratos
-    if (save.gpAtual >= CALENDARIO.length) {
-        abrirMercadoContratos();
+    const podioTela = $("podium-screen");
+    if (!podioTela) {
+        abrirTemporada();
         return;
     }
 
-    salvarSave();
-    tela("podium-screen").classList.add("hidden");
-    abrirTemporada();
+    // tenta ler um resultado salvo pelo raceSystem
+    let resultado = null;
+    try {
+        const raw = localStorage.getItem("F1_MANAGER_2025_ULTIMO_PODIO");
+        if (raw) resultado = JSON.parse(raw);
+    } catch (e) {
+        console.error("Erro ao ler pódio:", e);
+    }
+
+    const container = $("podio-container");
+    if (container) {
+        if (!resultado || !Array.isArray(resultado) || resultado.length === 0) {
+            container.innerHTML = "<p>Nenhum resultado de corrida encontrado.</p>";
+        } else {
+            let html = '<div class="podium-grid">';
+            resultado.slice(0, 3).forEach((piloto, idx) => {
+                const pos = idx + 1;
+                html += `
+                    <div class="podium-slot podium-pos-${pos}">
+                        <div class="podium-pos-label">${pos}º</div>
+                        <div class="podium-pilot-name">${piloto.nome}</div>
+                    </div>
+                `;
+            });
+            html += "</div>";
+            container.innerHTML = html;
+        }
+    }
+
+    mostrarTela("podium-screen");
 }
 
+/* Botão "Voltar" do setup */
+function voltarGP() {
+    mostrarTela("tela-gp");
+}
 
 /* ===============================================================
-   TELA DE MERCADO DE CONTRATOS (FINAL DA TEMPORADA)
+   TELA DE CONTRATOS (placeholder)
 ================================================================ */
-function abrirMercadoContratos() {
-    tela("podium-screen").classList.add("hidden");
-    tela("tela-contratos").classList.remove("hidden");
-
-    const lista = document.getElementById("lista-contratos");
+function abrirContratos() {
+    mostrarTela("tela-contratos");
+    const lista = $("lista-contratos");
     if (lista) {
-        lista.innerHTML = `
-            <p>Sistema de contratos completo será habilitado após 24 GPs.</p>
-            <p>Versão demo: ao finalizar, a temporada é reiniciada.</p>
-        `;
+        lista.innerHTML = "<p>Sistema de contratos será detalhado em uma próxima etapa.</p>";
     }
 }
 
-function finalizarMercado() {
-    // Reinicia temporada
-    save.gpAtual = 0;
-    salvarSave();
-
-    tela("tela-contratos").classList.add("hidden");
-    abrirTemporada();
-}
-
-
 /* ===============================================================
-   VOLTAR DE TELAS SECUNDÁRIAS (SETUP → GP)
-================================================================ */
-function voltarGP() {
-    tela("tela-setup").classList.add("hidden");
-    tela("tela-gp").classList.remove("hidden");
-}
-
-
-/* ===============================================================
-   INICIALIZAÇÃO AO CARREGAR PÁGINA
+   INICIALIZAÇÃO
 ================================================================ */
 window.addEventListener("load", () => {
     carregarSave();
-    // se já existir carreira, fica no menu; senão, mostra capa e espera clique
+    atualizarBotaoContinuar();
+    // Ao carregar, a tela inicial é a capa; o clique na capa chama irMenu()
 });
