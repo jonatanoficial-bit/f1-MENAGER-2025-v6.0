@@ -1,150 +1,143 @@
-/* ===========================================================
-   F1 MANAGER 2025 — DATA PRINCIPAL
-   EQUIPES • PILOTOS • CALENDÁRIO (24 GPs)
-=========================================================== */
+// ================================================
+// BASE DE DADOS F1 MANAGER 2025 – VALE EDITION
+// ================================================
 
-/* ===========================================================
-   EQUIPES
-=========================================================== */
-
+// -------- EQUIPES (10) --------------------------------
 const EQUIPES = [
-    {
-        id: "redbull",
-        nome: "Red Bull Racing",
-        logo: "assets/logos/redbull.png",
-        cor: "#1E41FF"
-    },
-    {
-        id: "ferrari",
-        nome: "Scuderia Ferrari",
-        logo: "assets/logos/ferrari.png",
-        cor: "#E10600"
-    },
-    {
-        id: "mercedes",
-        nome: "Mercedes",
-        logo: "assets/logos/mercedes.png",
-        cor: "#00D2BE"
-    },
-    {
-        id: "mclaren",
-        nome: "McLaren",
-        logo: "assets/logos/mclaren.png",
-        cor: "#FF8700"
-    },
-    {
-        id: "astonmartin",
-        nome: "Aston Martin",
-        logo: "assets/logos/astonmartin.png",
-        cor: "#006F62"
-    },
-    {
-        id: "alpine",
-        nome: "Alpine",
-        logo: "assets/logos/alpine.png",
-        cor: "#0090FF"
-    },
-    {
-        id: "williams",
-        nome: "Williams",
-        logo: "assets/logos/williams.png",
-        cor: "#005AFF"
-    },
-    {
-        id: "rb",
-        nome: "RB",
-        logo: "assets/logos/rb.png",
-        cor: "#2B4562"
-    },
-    {
-        id: "sauber",
-        nome: "Sauber",
-        logo: "assets/logos/sauber.png",
-        cor: "#52E252"
-    },
-    {
-        id: "haas",
-        nome: "Haas",
-        logo: "assets/logos/haas.png",
-        cor: "#FFFFFF"
-    }
+  {
+    id: "RED",
+    nome: "Oracle Red Bull Racing",
+    logo: "assets/logos/redbull.png",
+    cor: "#1E5BC6",
+    carroImg: "assets/cars/redbull.png"
+  },
+  {
+    id: "FER",
+    nome: "Scuderia Ferrari",
+    logo: "assets/logos/ferrari.png",
+    cor: "#DC0000",
+    carroImg: "assets/cars/ferrari.png"
+  },
+  {
+    id: "MER",
+    nome: "Mercedes-AMG F1",
+    logo: "assets/logos/mercedes.png",
+    cor: "#00D2BE",
+    carroImg: "assets/cars/mercedes.png"
+  },
+  {
+    id: "MCL",
+    nome: "McLaren",
+    logo: "assets/logos/mclaren.png",
+    cor: "#FF8700",
+    carroImg: "assets/cars/mclaren.png"
+  },
+  {
+    id: "AST",
+    nome: "Aston Martin",
+    logo: "assets/logos/aston_martin.png",
+    cor: "#006F62",
+    carroImg: "assets/cars/aston_martin.png"
+  },
+  {
+    id: "ALP",
+    nome: "Alpine",
+    logo: "assets/logos/alpine.png",
+    cor: "#0090FF",
+    carroImg: "assets/cars/alpine.png"
+  },
+  {
+    id: "WIL",
+    nome: "Williams",
+    logo: "assets/logos/williams.png",
+    cor: "#005AFF",
+    carroImg: "assets/cars/williams.png"
+  },
+  {
+    id: "RB",
+    nome: "Visa Cash App RB",
+    logo: "assets/logos/rb.png",
+    cor: "#2B4562",
+    carroImg: "assets/cars/rb.png"
+  },
+  {
+    id: "SAU",
+    nome: "Stake F1 Team Sauber",
+    logo: "assets/logos/sauber.png",
+    cor: "#00E701",
+    carroImg: "assets/cars/sauber.png"
+  },
+  {
+    id: "HAA",
+    nome: "Haas F1 Team",
+    logo: "assets/logos/haas.png",
+    cor: "#B6BABD",
+    carroImg: "assets/cars/haas.png"
+  }
 ];
 
-/* ===========================================================
-   PILOTOS
-   rating: 0–100 (habilidade geral aproximada)
-=========================================================== */
-
+// -------- PILOTOS (20) -------------------------------
+// campos usados no jogo: id, nome, equipe, pais, avatar, rating
 const PILOTOS = [
-    // RED BULL
-    { id: "max_verstappen", nome: "Max Verstappen", equipe: "redbull", rating: 96, avatar: "assets/faces/verstappen.png", pais: "nl" },
-    { id: "perez",          nome: "Sergio Pérez",    equipe: "redbull", rating: 89, avatar: "assets/faces/perez.png",      pais: "mx" },
+  { id: "VER", nome: "Max Verstappen",      equipe: "RED", pais: "nl", avatar: "assets/faces/verstappen.png", rating: 98 },
+  { id: "PER", nome: "Sergio Pérez",        equipe: "RED", pais: "mx", avatar: "assets/faces/perez.png",       rating: 93 },
 
-    // FERRARI
-    { id: "leclerc", nome: "Charles Leclerc", equipe: "ferrari", rating: 92, avatar: "assets/faces/leclerc.png", pais: "mc" },
-    { id: "sainz",   nome: "Carlos Sainz",    equipe: "ferrari", rating: 89, avatar: "assets/faces/sainz.png",   pais: "es" },
+  { id: "LEC", nome: "Charles Leclerc",     equipe: "FER", pais: "mc", avatar: "assets/faces/leclerc.png",    rating: 94 },
+  { id: "SAI", nome: "Carlos Sainz",        equipe: "FER", pais: "es", avatar: "assets/faces/sainz.png",      rating: 92 },
 
-    // MERCEDES
-    { id: "hamilton", nome: "Lewis Hamilton", equipe: "mercedes", rating: 94, avatar: "assets/faces/hamilton.png", pais: "gb" },
-    { id: "russell",  nome: "George Russell", equipe: "mercedes", rating: 90, avatar: "assets/faces/russell.png",  pais: "gb" },
+  { id: "HAM", nome: "Lewis Hamilton",      equipe: "MER", pais: "gb", avatar: "assets/faces/hamilton.png",   rating: 96 },
+  { id: "RUS", nome: "George Russell",      equipe: "MER", pais: "gb", avatar: "assets/faces/russell.png",    rating: 93 },
 
-    // MCLAREN
-    { id: "norris",   nome: "Lando Norris",   equipe: "mclaren", rating: 91, avatar: "assets/faces/norris.png",   pais: "gb" },
-    { id: "piastri",  nome: "Oscar Piastri",  equipe: "mclaren", rating: 88, avatar: "assets/faces/piastri.png",  pais: "au" },
+  { id: "NOR", nome: "Lando Norris",        equipe: "MCL", pais: "gb", avatar: "assets/faces/norris.png",     rating: 94 },
+  { id: "PIA", nome: "Oscar Piastri",       equipe: "MCL", pais: "au", avatar: "assets/faces/piastri.png",    rating: 91 },
 
-    // ASTON MARTIN
-    { id: "alonso", nome: "Fernando Alonso", equipe: "astonmartin", rating: 92, avatar: "assets/faces/alonso.png", pais: "es" },
-    { id: "stroll", nome: "Lance Stroll",   equipe: "astonmartin", rating: 84, avatar: "assets/faces/stroll.png", pais: "ca" },
+  { id: "ALO", nome: "Fernando Alonso",     equipe: "AST", pais: "es", avatar: "assets/faces/alonso.png",     rating: 93 },
+  { id: "STR", nome: "Lance Stroll",        equipe: "AST", pais: "ca", avatar: "assets/faces/stroll.png",     rating: 87 },
 
-    // ALPINE
-    { id: "gasly", nome: "Pierre Gasly", equipe: "alpine", rating: 87, avatar: "assets/faces/gasly.png", pais: "fr" },
-    { id: "ocon",  nome: "Esteban Ocon", equipe: "alpine", rating: 86, avatar: "assets/faces/ocon.png",  pais: "fr" },
+  { id: "GAS", nome: "Pierre Gasly",        equipe: "ALP", pais: "fr", avatar: "assets/faces/gasly.png",      rating: 89 },
+  { id: "OCO", nome: "Esteban Ocon",        equipe: "ALP", pais: "fr", avatar: "assets/faces/ocon.png",       rating: 89 },
 
-    // WILLIAMS
-    { id: "albon",    nome: "Alex Albon",     equipe: "williams", rating: 86, avatar: "assets/faces/albon.png",    pais: "th" },
-    { id: "sargeant", nome: "Logan Sargeant", equipe: "williams", rating: 78, avatar: "assets/faces/sargeant.png", pais: "us" },
+  { id: "ALB", nome: "Alexander Albon",     equipe: "WIL", pais: "th", avatar: "assets/faces/albon.png",      rating: 90 },
+  { id: "SAR", nome: "Logan Sargeant",      equipe: "WIL", pais: "us", avatar: "assets/faces/sargeant.png",   rating: 82 },
 
-    // RB
-    { id: "ricciardo", nome: "Daniel Ricciardo", equipe: "rb", rating: 85, avatar: "assets/faces/ricciardo.png", pais: "au" },
-    { id: "tsunoda",   nome: "Yuki Tsunoda",    equipe: "rb", rating: 83, avatar: "assets/faces/tsunoda.png",   pais: "jp" },
+  { id: "TSU", nome: "Yuki Tsunoda",        equipe: "RB",  pais: "jp", avatar: "assets/faces/tsunoda.png",    rating: 88 },
+  { id: "LAW", nome: "Liam Lawson",         equipe: "RB",  pais: "nz", avatar: "assets/faces/lawson.png",     rating: 86 },
 
-    // SAUBER
-    { id: "bottas", nome: "Valtteri Bottas", equipe: "sauber", rating: 85, avatar: "assets/faces/bottas.png", pais: "fi" },
-    { id: "zhou",   nome: "Guanyu Zhou",     equipe: "sauber", rating: 80, avatar: "assets/faces/zhou.png",   pais: "cn" },
+  { id: "BOT", nome: "Valtteri Bottas",     equipe: "SAU", pais: "fi", avatar: "assets/faces/bottas.png",     rating: 88 },
+  { id: "ZHO", nome: "Guanyu Zhou",         equipe: "SAU", pais: "cn", avatar: "assets/faces/zhou.png",       rating: 84 },
 
-    // HAAS
-    { id: "hulkenberg", nome: "Nico Hülkenberg", equipe: "haas", rating: 84, avatar: "assets/faces/hulkenberg.png", pais: "de" },
-    { id: "magnussen",  nome: "Kevin Magnussen", equipe: "haas", rating: 82, avatar: "assets/faces/magnussen.png",  pais: "dk" }
+  { id: "HUL", nome: "Nico Hülkenberg",     equipe: "HAA", pais: "de", avatar: "assets/faces/hulkenberg.png", rating: 87 },
+  { id: "MAG", nome: "Kevin Magnussen",     equipe: "HAA", pais: "dk", avatar: "assets/faces/magnussen.png",  rating: 86 }
 ];
 
-/* ===========================================================
-   CALENDÁRIO (24 GPs)
-   pista: nome do arquivo SVG na pasta assets/tracks
-=========================================================== */
-
+// -------- CALENDÁRIO (24 GPS) ------------------------
 const CALENDARIO = [
-    { id: 1,  nome: "GP do Bahrein",          pista: "bahrain.svg" },
-    { id: 2,  nome: "GP da Arábia Saudita",   pista: "jeddah.svg" },
-    { id: 3,  nome: "GP da Austrália",        pista: "australia.svg" },
-    { id: 4,  nome: "GP do Japão",            pista: "suzuka.svg" },
-    { id: 5,  nome: "GP da China",            pista: "china.svg" },
-    { id: 6,  nome: "GP de Miami",            pista: "miami.svg" },
-    { id: 7,  nome: "GP da Emília-Romanha",   pista: "imola.svg" },
-    { id: 8,  nome: "GP de Mônaco",           pista: "monaco.svg" },
-    { id: 9,  nome: "GP do Canadá",           pista: "canada.svg" },
-    { id: 10, nome: "GP da Espanha",          pista: "barcelona.svg" },
-    { id: 11, nome: "GP da Áustria",          pista: "austria.svg" },
-    { id: 12, nome: "GP da Grã-Bretanha",     pista: "silverstone.svg" },
-    { id: 13, nome: "GP da Hungria",          pista: "hungaroring.svg" },
-    { id: 14, nome: "GP da Bélgica",          pista: "spa.svg" },
-    { id: 15, nome: "GP da Holanda",          pista: "zandvoort.svg" },
-    { id: 16, nome: "GP da Itália",           pista: "monza.svg" },
-    { id: 17, nome: "GP do Azerbaijão",       pista: "baku.svg" },
-    { id: 18, nome: "GP de Singapura",        pista: "singapore.svg" },
-    { id: 19, nome: "GP dos EUA (Austin)",    pista: "cota.svg" },
-    { id: 20, nome: "GP do México",           pista: "mexico.svg" },
-    { id: 21, nome: "GP de São Paulo",        pista: "interlagos.svg" },
-    { id: 22, nome: "GP de Las Vegas",        pista: "lasvegas.svg" },
-    { id: 23, nome: "GP do Qatar",            pista: "qatar.svg" },
-    { id: 24, nome: "GP de Abu Dhabi",        pista: "abudhabi.svg" }
+  { id: "BH",  nome: "🇧🇭 GP do Bahrein",                pista: "bahrain.svg",        voltas: 57 },
+  { id: "SA",  nome: "🇸🇦 GP da Arábia Saudita",         pista: "saudi_arabia.svg",   voltas: 50 },
+  { id: "AU",  nome: "🇦🇺 GP da Austrália",              pista: "australia.svg",      voltas: 58 },
+  { id: "JP",  nome: "🇯🇵 GP do Japão (Suzuka)",         pista: "suzuka.svg",         voltas: 53 },
+  { id: "CN",  nome: "🇨🇳 GP da China",                  pista: "china.svg",          voltas: 56 },
+  { id: "USM", nome: "🇺🇸 GP de Miami",                  pista: "miami.svg",          voltas: 57 },
+  { id: "ITM", nome: "🇮🇹 GP da Emília-Romanha (Imola)", pista: "imola.svg",          voltas: 63 },
+  { id: "MC",  nome: "🇲🇨 GP de Mônaco",                 pista: "monaco.svg",         voltas: 78 },
+  { id: "CA",  nome: "🇨🇦 GP do Canadá",                 pista: "canada.svg",         voltas: 70 },
+  { id: "ES",  nome: "🇪🇸 GP da Espanha",                pista: "espanha.svg",        voltas: 66 },
+  { id: "AT",  nome: "🇦🇹 GP da Áustria",                pista: "austria.svg",        voltas: 71 },
+  { id: "GB",  nome: "🇬🇧 GP da Inglaterra (Silverstone)", pista: "silverstone.svg",  voltas: 52 },
+  { id: "HU",  nome: "🇭🇺 GP da Hungria",                pista: "hungria.svg",        voltas: 70 },
+  { id: "BE",  nome: "🇧🇪 GP da Bélgica (Spa)",          pista: "spa.svg",            voltas: 44 },
+  { id: "NL",  nome: "🇳🇱 GP da Holanda (Zandvoort)",    pista: "zandvoort.svg",      voltas: 72 },
+  { id: "IT",  nome: "🇮🇹 GP da Itália (Monza)",         pista: "monza.svg",          voltas: 53 },
+  { id: "AZ",  nome: "🇦🇿 GP do Azerbaijão (Baku)",      pista: "baku.svg",           voltas: 51 },
+  { id: "SG",  nome: "🇸🇬 GP de Singapura",              pista: "singapura.svg",      voltas: 62 },
+  { id: "USA", nome: "🇺🇸 GP dos EUA (Austin)",          pista: "austin.svg",         voltas: 56 },
+  { id: "MX",  nome: "🇲🇽 GP do México",                 pista: "mexico.svg",         voltas: 71 },
+  { id: "BR",  nome: "🇧🇷 GP do Brasil (Interlagos)",    pista: "interlagos.svg",     voltas: 71 },
+  { id: "LV",  nome: "🇺🇸 GP de Las Vegas",              pista: "lasvegas.svg",       voltas: 50 },
+  { id: "QA",  nome: "🇶🇦 GP do Catar",                  pista: "qatar.svg",          voltas: 57 },
+  { id: "AD",  nome: "🇦🇪 GP de Abu Dhabi",              pista: "abudhabi.svg",       voltas: 58 }
 ];
+
+// -----------------------------------------------------
+// Fim do data.js
+// -----------------------------------------------------
