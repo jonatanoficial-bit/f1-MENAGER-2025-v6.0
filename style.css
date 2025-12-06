@@ -333,3 +333,38 @@ button:active {
         padding: 8px 10px;
     }
 }
+/* =========================================
+   AJUSTES DE LAYOUT - GERENTE E MENU
+========================================= */
+
+/* Tela de escolha do gerente: centralizar e limitar largura */
+#tela-gerente {
+    padding-top: 80px;
+}
+
+/* Grid de gerentes mais responsivo */
+#lista-gerentes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto 40px;
+}
+
+/* Cartão do gerente */
+.card-gerente {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+}
+
+/* Imagem do gerente menor e recortada certinho */
+.card-gerente img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 8px;
+}
